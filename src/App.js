@@ -48,7 +48,9 @@ useEffect(()=>{
     setTime("");
     
   };
-
+  if(loading){
+    return <p>Carregando...</p>;
+  }
   return (
     <div className="App">
       <div className='todo-header'>
