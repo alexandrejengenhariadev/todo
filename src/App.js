@@ -1,14 +1,14 @@
 
 import './App.css';
 import{useState, useEffect} from 'react';
-import{BsTrash, BsBookmarkCheckFill,BsBookmarkCheck} from 'react-icons';
+import{BsTrash, BsBookmarkCheckFill,BsBookmarkCheck} from 'react-icons/bs';
 const API = "http://localhost:5000";
 
 function App() {
   const [title, setTitle] = useState(" ");
   const [time, setTime] = useState(" ");
-  const[todos, setTodos] = useState([]);
-  const[loading, setLoading] = useState(false);
+  const [todos, setTodos] = useState([]);
+  const [loading, setLoading] = useState(false);
 
 //Load todos on page load
 useEffect(()=>{
@@ -22,7 +22,7 @@ useEffect(()=>{
     setLoading(false);
     setTodos(res);
   };
-  loadData();
+loadData();
 
 },[]);
   const handleSubmit = async (e) => {
@@ -45,12 +45,19 @@ useEffect(()=>{
     setTodos((prevState)=>[...prevState, todo]);
     
     setTitle("");
-    setTime("");
-    
+    setTime("");    
   };
+
+  const handleDelete = async (id) =>{
+    await fetch(API + "/todos" + id, {
+      method: "DELETE"
+          });
+          setTodos((prevState)=>prevState.filter((todo)=>todo.id !== id));
+        };
+
   if(loading){
     return <p>Carregando...</p>;
-  }
+  };
   return (
     <div className="App">
       <div className='todo-header'>
@@ -94,7 +101,15 @@ useEffect(()=>{
       {todos.length === 0 && <p>Não há tarefas!</p>}
       {todos.map((todo) => 
         (<div className="todo" key={todo.id}>
-          <p>{todo.title}</p>
+          <h3 className={todo.done ? "todo-done":""}>{todo.title}</h3>
+          <p>Duração: {todo.time}</p>
+          <div className="actions">
+            <span>
+              {todo.done ? <BsBookmarkCheck/>:<BsBookmarkCheckFill/>}
+            </span>
+            <BsTrash onClick={()=>handleDelete(todo.id)}/>
+
+          </div>
         </div>)
       )}
 
